@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "13996984277",
+    "project_id": "textfinder-85f95",
+    "storage_bucket": "textfinder-85f95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:13996984277:android:c3a07b0cc5e7d654ff1f5c",
+        "android_client_info": {
+          "package_name": "com.example.textfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "13996984277-a4c7stmcedpskpfa4p3sj860mj1ff1cb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2st6hUMm48C5q-Q7OshCOgQEyUCpJe-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "13996984277-a4c7stmcedpskpfa4p3sj860mj1ff1cb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

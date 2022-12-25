@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/edit_text_bg"
+    android:padding="12dp"
+    android:orientation="vertical"
+    android:id="@+id/linearView"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/titleTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Imp Notes"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/contentTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="text text text text bla bla bla"
+        android:textSize="18dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="0dp"
+        />
+
+    <TextView
+        android:id="@+id/dateTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="text text text text bla bla bla"
+        android:textSize="14dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        />
+
+
+
+</LinearLayout>
