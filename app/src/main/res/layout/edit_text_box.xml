@@ -21,6 +21,7 @@
         android:layout_margin="16dp"
         android:hint="E.g. Imp notes"
         android:inputType="textMultiLine"
+
         android:background="@drawable/edit_text_bg"
         android:scrollbars="vertical" />
 

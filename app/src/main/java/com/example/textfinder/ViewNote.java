@@ -1,15 +1,18 @@
 package com.example.textfinder;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,8 +24,9 @@ public class ViewNote extends AppCompatActivity {
     private TextView title;
     private EditText editContent;
     private ImageButton backBtn;
-    private Button copyBtn, cancelBtn, saveBtn, shareBtn;
+    private Button copyBtn, deleteBtn, saveBtn, shareBtn;
 
+    private int id;
     private String titleView;
     private String content;
 
@@ -33,16 +37,22 @@ public class ViewNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         title = findViewById(R.id.titleView);
         editContent = findViewById(R.id.resultText);
         copyBtn = findViewById(R.id.copy_btn);
         backBtn = findViewById(R.id.back_btn);
-        cancelBtn = findViewById(R.id.cancel_btn);
+        deleteBtn = findViewById(R.id.delete_btn);
         saveBtn = findViewById(R.id.save_btn);
         shareBtn = findViewById(R.id.shareBtn);
 
+        dbManager = new DBManager(this);
+        dbManager.open();
+
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
+        id = (int) extras.get("id");
         titleView = (String) extras.get("title");
         content = (String) extras.get("content");
 
@@ -67,12 +77,27 @@ public class ViewNote extends AppCompatActivity {
         });
 
 
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),MainActivity.class);
-                finish();
-                startActivity(i);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ViewNote.this);
+                builder.setMessage("Do you really want to delete this text?");
+                builder.setTitle("Alert!");
+                builder.setCancelable(false);
+
+                builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    dbManager.delete(id);
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(i);
+                });
+
+                builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    dialog.cancel();
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
 
             }
         });
@@ -86,6 +111,15 @@ public class ViewNote extends AppCompatActivity {
                 String note = titleView + " : \n" + content;
                 shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,note);
                 startActivity(Intent.createChooser(shareIntent, "Share via"));
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbManager.update(id, titleView, editContent.getText().toString());
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(i);
             }
         });
 

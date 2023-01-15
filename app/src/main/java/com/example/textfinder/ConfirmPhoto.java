@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +30,9 @@ public class ConfirmPhoto extends AppCompatActivity {
 
     private Button extractBtn;
     private ImageButton backBtn;
-    Bitmap imageBitmap;
+
+    byte[] byteArray;
+    Uri uriPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +41,16 @@ public class ConfirmPhoto extends AppCompatActivity {
 
         backBtn = findViewById(R.id.back_btn);
 
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        imageBitmap = (Bitmap) extras.get("image");
+//        Intent intent = getIntent();
+//        Bundle extras = intent.getExtras();
+//        imageUri = Uri.parse(extras.getString("imagepath"));
+
+        uriPath = getIntent().getParcelableExtra("imagepath");
+
+//        Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
         ImageView imageView = findViewById(R.id.cameraImage);
-        imageView.setImageBitmap(imageBitmap);
+        imageView.setImageURI(uriPath);
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +65,7 @@ public class ConfirmPhoto extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), EditPage.class);
-                i.putExtra("image", imageBitmap);
+                i.putExtra("imagepath", uriPath);
                 startActivity(i);
             }
         });

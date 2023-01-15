@@ -11,11 +11,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,6 +35,8 @@ import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -40,7 +47,9 @@ public class EditPage extends AppCompatActivity {
     private Button copyBtn;
     private Button cancelBtn;
     private Button saveBtn;
-    Bitmap imageBitmap;
+    private Uri uriPath;
+
+    byte[] byteArray;
 
     private DBManager dbManager;
 
@@ -50,9 +59,13 @@ public class EditPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_page);
 
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        imageBitmap = (Bitmap) extras.get("image");
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+//        Intent intent = getIntent();
+//        Bundle extras = intent.getExtras();
+//        byteArray = getIntent().getByteArrayExtra("imagepath");
+
+        uriPath = getIntent().getParcelableExtra("imagepath");
 
         editText = findViewById(R.id.resultText);
         copyBtn = findViewById(R.id.copy_btn);
@@ -99,16 +112,22 @@ public class EditPage extends AppCompatActivity {
                 final View view1 = getLayoutInflater().inflate(R.layout.edit_text_box, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(EditPage.this);
                 builder.setTitle("Enter title");
-    //                builder.setCancelable(false);
+                builder.setCancelable(false);
 
                 final EditText titleText = (EditText) view1.findViewById(R.id.editTitle);
 
                 builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+                        if(TextUtils.isEmpty(titleText.getText().toString())) {
+                            Toast.makeText(context, "Title cannot be empty. Please try again", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa E MMM dd, yyyy");
                         Date date = new Date();
-                        Note note = new Note(titleText.getText().toString(),result.toString(),date.toString());
+                        Note note = new Note(titleText.getText().toString(),editText.getText().toString(),formatter.format(date));
 
                         dbManager.insert(note.getTitle(), note.getContent(), note.getDate());
                         Intent i = new Intent(getApplicationContext(), MainActivity.class)
@@ -133,14 +152,18 @@ public class EditPage extends AppCompatActivity {
             }
         });
 
-        detectText();
-
+        try {
+            detectText();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
 
-    private void detectText(){
-        InputImage image = InputImage.fromBitmap(imageBitmap, 0);
+    private void detectText() throws IOException {
+
+        InputImage image = InputImage.fromFilePath(getApplicationContext(),uriPath);
         TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
         Task<Text> resultText = recognizer.process(image).addOnSuccessListener(new OnSuccessListener<Text>() {
             @Override
@@ -176,6 +199,13 @@ public class EditPage extends AppCompatActivity {
                 }
 //                String s = editText.getText().toString();
                 System.out.println("RESULT : " + result.toString());
+
+                if(result.toString().isEmpty()){
+                    Toast.makeText(EditPage.this, "No Text found in the image. Please try again.", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(i);
+                }
+
                 editText.setText(result.toString());
 
             }

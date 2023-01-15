@@ -37,7 +37,7 @@ public class DBManager {
     }
 
     public Cursor fetch() {
-        System.out.println("inside cursor fetch func");
+//        System.out.println("inside cursor fetch func");
         String[] columns = new String[] { DatabaseHelper.ID, DatabaseHelper.TITLE, DatabaseHelper.CONTENT, DatabaseHelper.DATE};
         Cursor cursor = database.query(DatabaseHelper.TABLE_NAME, columns, null, null, null, null, null);
         if (cursor != null) {
@@ -47,11 +47,10 @@ public class DBManager {
         return cursor;
     }
 
-    public int update(long id, String title, String content, String date) {
+    public int update(long id, String title, String content) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseHelper.TITLE, title);
         contentValues.put(DatabaseHelper.CONTENT, content);
-        contentValues.put(DatabaseHelper.DATE, date);
         int i = database.update(DatabaseHelper.TABLE_NAME, contentValues, DatabaseHelper.ID + " = " + id, null);
         return i;
     }

@@ -6,15 +6,22 @@ public class Note {
     private String content;
     private String date;
 
+    public Note(int id, String title, String content, String date) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.date = date;
+    }
+
     public Note(String title, String content, String date) {
         this.title = title;
         this.content = content;
         this.date = date;
     }
 
-//    public int getId() {
-//        return id;
-//    }
+    public int getId() {
+        return id;
+    }
 //
 //    public void setId(int id) {
 //        this.id = id;
