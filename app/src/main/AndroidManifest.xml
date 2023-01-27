@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"
@@ -18,32 +19,24 @@
         android:theme="@style/Theme.TextFinder"
         tools:targetApi="31">
         <activity
+            android:name=".SmartDetect"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".ViewNote"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
         <activity
             android:name=".EditPage"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
         <activity
             android:name=".ExtractedText"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
         <activity
             android:name=".ConfirmPhoto"
             android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
         <activity
             android:name=".MainActivity"
@@ -54,9 +47,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+
         </activity>
 
         <provider
@@ -66,7 +57,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_path"/>
+                android:resource="@xml/file_path" />
         </provider>
     </application>
 

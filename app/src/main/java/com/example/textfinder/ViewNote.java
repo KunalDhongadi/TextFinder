@@ -23,14 +23,14 @@ public class ViewNote extends AppCompatActivity {
 
     private TextView title;
     private EditText editContent;
-    private ImageButton backBtn;
+    private ImageButton backImageBtn;
     private Button copyBtn, deleteBtn, saveBtn, shareBtn;
 
-    private int id;
+    private int idObj;
     private String titleView;
     private String content;
 
-    private DBManager dbManager;
+    private DBManager dbManagerObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +42,17 @@ public class ViewNote extends AppCompatActivity {
         title = findViewById(R.id.titleView);
         editContent = findViewById(R.id.resultText);
         copyBtn = findViewById(R.id.copy_btn);
-        backBtn = findViewById(R.id.back_btn);
+        backImageBtn = findViewById(R.id.back_btn);
         deleteBtn = findViewById(R.id.delete_btn);
         saveBtn = findViewById(R.id.save_btn);
         shareBtn = findViewById(R.id.shareBtn);
 
-        dbManager = new DBManager(this);
-        dbManager.open();
+        dbManagerObj = new DBManager(this);
+        dbManagerObj.open();
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        id = (int) extras.get("id");
+        idObj = (int) extras.get("id");
         titleView = (String) extras.get("title");
         content = (String) extras.get("content");
 
@@ -69,7 +69,7 @@ public class ViewNote extends AppCompatActivity {
             }
         });
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
+        backImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -80,22 +80,22 @@ public class ViewNote extends AppCompatActivity {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ViewNote.this);
-                builder.setMessage("Do you really want to delete this text?");
-                builder.setTitle("Alert!");
-                builder.setCancelable(false);
+                AlertDialog.Builder builderObj = new AlertDialog.Builder(ViewNote.this);
+                builderObj.setMessage("Do you really want to delete this text?");
+                builderObj.setTitle("Alert!");
+                builderObj.setCancelable(false);
 
-                builder.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
-                    dbManager.delete(id);
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(i);
+                builderObj.setPositiveButton("Yes", (DialogInterface.OnClickListener) (dialog, which) -> {
+                    dbManagerObj.delete(idObj);
+                    Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(homeIntent);
                 });
 
-                builder.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
+                builderObj.setNegativeButton("No", (DialogInterface.OnClickListener) (dialog, which) -> {
                     dialog.cancel();
                 });
 
-                AlertDialog alertDialog = builder.create();
+                AlertDialog alertDialog = builderObj.create();
                 alertDialog.show();
 
 
@@ -117,9 +117,9 @@ public class ViewNote extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbManager.update(id, titleView, editContent.getText().toString());
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
+                dbManagerObj.updateTable(idObj, titleView, editContent.getText().toString());
+                Intent nextActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(nextActivityIntent);
             }
         });
 

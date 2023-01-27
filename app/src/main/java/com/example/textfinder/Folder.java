@@ -9,19 +9,12 @@ public class Folder {
         this.title = title;
     }
 
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
 
-    public String getTitle() {
+    public String getNoteTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setNoteTitle(String title) {
         this.title = title;
     }
 }

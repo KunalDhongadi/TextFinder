@@ -1,15 +1,19 @@
  package com.example.textfinder;
 
 import static android.Manifest.permission.CAMERA;
+
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +21,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,16 +32,15 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLOutput;
+
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -72,19 +74,19 @@ import java.util.Locale;
 
         dbManager = new DBManager(this);
         dbManager.open();
-        Cursor cursor = dbManager.fetch();
+        Cursor cursorObject = dbManager.fetch();
 
 //        System.out.println("Length of cursor1-" + cursor.getString(cursor.getColumnIndexOrThrow("title")));
 //        System.out.println("Length of cursor2-" + cursor.getString(cursor.getColumnIndexOrThrow("content")));
 //        System.out.println("Length of cursor3-" + cursor.getString(cursor.getColumnIndexOrThrow("date")));
 //        cursor.moveToFirst();
-        for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
+        for (cursorObject.moveToLast(); !cursorObject.isBeforeFirst(); cursorObject.moveToPrevious()) {
             System.out.println("Inside cursor-");
-            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-            String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
-            String content = cursor.getString(cursor.getColumnIndexOrThrow("content"));
-            String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-            notes.add(new Note(id,title,content,date));
+            int id = cursorObject.getInt(cursorObject.getColumnIndexOrThrow("id"));
+            String titleText = cursorObject.getString(cursorObject.getColumnIndexOrThrow("title"));
+            String content = cursorObject.getString(cursorObject.getColumnIndexOrThrow("content"));
+            String currentDate = cursorObject.getString(cursorObject.getColumnIndexOrThrow("date"));
+            notes.add(new Note(id,titleText,content,currentDate));
         }
 //        System.out.println("Cursor--" + cursor);
 
@@ -106,8 +108,8 @@ import java.util.Locale;
                 if(checkPermission() && checkPermissionStorage()){
                     try {
                         captureImage();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException errorIO) {
+                        errorIO.printStackTrace();
                     }
                 }else if(checkPermission()){
                     requestPermissionStorage();
@@ -162,39 +164,30 @@ import java.util.Locale;
      }
 
     private void captureImage() throws IOException {
-        Intent takephoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(takephoto.resolveActivity(getPackageManager()) != null){
-            File photoFile = createImageFile();
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this, getPackageName() + ".provider", photoFile);
-                takephoto.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takephoto, REQUEST_IMAGE_CAPTURE);
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(takePhotoIntent.resolveActivity(getPackageManager()) != null){
+            File photoFileObj = createImageFile();
+            if (photoFileObj != null) {
+                Uri photoURIObj = FileProvider.getUriForFile(this, getPackageName() + ".provider", photoFileObj);
+                takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURIObj);
+                startActivityForResult(takePhotoIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
     }
 
     private void pickImage(){
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
 
-//        Intent chooserIntent = Intent.createChooser(intent, "Select Image");
-//        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {intent});
-
-
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        startActivityForResult(intent, 1) ;
-
-        if(intent.resolveActivity(getPackageManager()) != null){
-            startActivityForResult(intent, PICK_IMAGE);
+        Intent galleryPickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if(galleryPickIntent.resolveActivity(getPackageManager()) != null){
+            startActivityForResult(galleryPickIntent, PICK_IMAGE);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    public void onRequestPermissionsResult(int requestCodeInt, @NonNull String[] permissions, @NonNull int[] grantResultsList) {
+        super.onRequestPermissionsResult(requestCodeInt , permissions, grantResultsList);
+        if (requestCodeInt == REQUEST_IMAGE_CAPTURE) {
+            if (grantResultsList.length > 0 && grantResultsList[0] == PackageManager.PERMISSION_GRANTED) {
                 try {
                     captureImage();
                 } catch (IOException e) {
@@ -203,138 +196,61 @@ import java.util.Locale;
             } else {
                 Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
             }
-        }else if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        }else if (requestCodeInt == REQUEST_IMAGE_CAPTURE) {
+            if (grantResultsList.length > 0 && grantResultsList[0] == PackageManager.PERMISSION_GRANTED) {
                 pickImage();
             } else {
                 Toast.makeText(this, "Gallery permission denied", Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == REQUEST_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        } else if (requestCodeInt == REQUEST_STORAGE) {
+            if (grantResultsList.length > 0 && grantResultsList[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Storage permission accepted", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Storage permission denied", Toast.LENGTH_SHORT).show();
             }
         }
-//        if(grantResults.length > 0){
-//            boolean cameraPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-//            boolean galleryPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-//            boolean storagePermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
-//            if(cameraPermission && storagePermission){
-//                Toast.makeText(this,"Permission Granted", Toast.LENGTH_SHORT).show();
-//                try {
-//                    captureImage();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }else{
-//                Toast.makeText(this,"Permission Denied", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            if(galleryPermission){
-//                Toast.makeText(this,"Permission Granted", Toast.LENGTH_SHORT).show();
-//                pickImage();
-//            }else{
-//                Toast.makeText(this,"Permission Denied", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//        }
+//
     }
 
      String imageFilePath;
      private File createImageFile() throws IOException {
-         String timeStamp =
+         String timeStampStr =
                  new SimpleDateFormat("yyyyMMdd_HHmmss",
                          Locale.getDefault()).format(new Date());
-         String imageFileName = "TFA_" + timeStamp + "_";
+         String imageFileNameStr = "TFA_" + timeStampStr + "_";
          File cacheDir =
                  getCacheDir();
-         File image = File.createTempFile(
-                 imageFileName,  /* prefix */
+         File imageFileObj = File.createTempFile(
+                 imageFileNameStr,  /* prefix */
                  ".jpg",         /* suffix */
                  cacheDir      /* directory */
          );
 
-         imageFilePath = image.getAbsolutePath();
-         return image;
+         imageFilePath = imageFileObj.getAbsolutePath();
+         return imageFileObj;
      }
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+    protected void onActivityResult(int requestCode, int resultCodeInt, @Nullable Intent dataIntent) {
+        super.onActivityResult(requestCode, resultCodeInt, dataIntent);
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCodeInt == RESULT_OK){
 
 
             Uri uri = Uri.fromFile(new File(imageFilePath));
 
 
+            Intent nextActivityIntent = new Intent(this, ConfirmPhoto.class);
+            nextActivityIntent.putExtra("imagepath", uri);
+            startActivity(nextActivityIntent);
 
 
+        }else if(requestCode == PICK_IMAGE && resultCodeInt == RESULT_OK){
+            Uri uri = dataIntent.getData();
 
-//            Bitmap imageBitmap;
-//            byte[] byteArray = new byte[0];
-
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//
-//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//            byte[] byteArray = stream.toByteArray();
-
-//            try {
-//                InputStream inputStream = getContentResolver().openInputStream(uri);
-//                FileOutputStream fileOutputStream = new FileOutputStream(createImageFile());
-//                byte[] buffer = new byte[1024];
-//
-//                ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-//
-//                int bytesRead;
-//                while ((bytesRead = inputStream.read(buffer)) != -1) {
-//                    fileOutputStream.write(buffer, 0, bytesRead);
-//                    byteBuffer.write(buffer, 0 ,bytesRead);
-//                }
-//
-//
-//                fileOutputStream.close();
-//                byteBuffer.flush();
-//                inputStream.close();
-//
-//                byteArray = byteBuffer.toByteArray();
-//
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
-//            Log.v(TAG, "Clicked photo byteArray-" + byteArray);
-
-            Intent i = new Intent(this, ConfirmPhoto.class);
-            i.putExtra("imagepath", uri);
-            startActivity(i);
-
-
-        }else if(requestCode == PICK_IMAGE && resultCode == RESULT_OK){
-            Uri uri = data.getData();
-//            Bitmap imageBitmap;
-//            byte[] byteArray = new byte[0];
-
-//            try {
-//                imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                byteArray = stream.toByteArray();
-//
-//                Log.v(TAG, "Picked photo byteArray-" + byteArray);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
-            Intent i = new Intent(this, ConfirmPhoto.class);
-            i.putExtra("imagepath", uri);
-            startActivity(i);
+            Intent nextActivityIntent = new Intent(this, ConfirmPhoto.class);
+            nextActivityIntent.putExtra("imagepath", uri);
+            startActivity(nextActivityIntent);
 
         }
     }

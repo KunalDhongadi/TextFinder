@@ -51,13 +51,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             {
                 int pos = viewHolder.getAdapterPosition();
 //                Toast.makeText(view.getContext(), notes.get(pos).getTitle(), Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(view.getContext(),ViewNote.class);
-                i.putExtra("id", notes.get(pos).getId());
-                i.putExtra("title", notes.get(pos).getTitle());
-                i.putExtra("content",notes.get(pos).getContent());
+                Intent viewNoteActivity = new Intent(view.getContext(),ViewNote.class);
+                viewNoteActivity.putExtra("id", notes.get(pos).getId());
+                viewNoteActivity.putExtra("title", notes.get(pos).getTitle());
+                viewNoteActivity.putExtra("content",notes.get(pos).getContent());
 
 //                Toast.makeText(view.getContext(), notes.get(pos).getId() + " is the primary key", Toast.LENGTH_SHORT).show();
-                view.getContext().startActivity(i);
+                view.getContext().startActivity(viewNoteActivity);
             }
         });
 

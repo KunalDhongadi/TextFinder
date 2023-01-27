@@ -26,7 +26,7 @@
         android:id="@+id/resultText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/copy_btn"
+        android:layout_above="@+id/btn_group1"
         android:layout_below="@id/editPageNavbar"
         android:layout_marginStart="16dp"
 
@@ -38,24 +38,52 @@
         android:scrollbars="vertical"
         android:textSize="24dp" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/copy_btn"
+    <LinearLayout
+        android:id="@+id/btn_group1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btn_group"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="12dp"
-        android:padding="20dp"
-        android:text="Copy Text"
-        android:background="@drawable/btn_type_2"
-        android:textAllCaps="false"
-        android:elevation="0dp"
-        style="?android:attr/borderlessButtonStyle"
-        />
+        android:padding="0dp"
+        android:layout_above="@id/btn_group2"
+        android:orientation="horizontal"
+        >
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/smart_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_group"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="6dp"
+            android:padding="20dp"
+            android:layout_weight="1"
+            android:text="Smart Detect"
+            android:background="@drawable/btn_type_2"
+            android:textAllCaps="false"
+            android:elevation="0dp"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/copy_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:padding="20dp"
+            android:layout_weight="1"
+            android:text="Copy Text"
+            android:background="@drawable/btn_type_2"
+            android:textAllCaps="false"
+            android:elevation="0dp"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/btn_group"
+        android:id="@+id/btn_group2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="0dp"

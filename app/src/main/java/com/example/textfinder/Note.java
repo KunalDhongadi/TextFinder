@@ -4,19 +4,19 @@ public class Note {
     private int id;
     private String title;
     private String content;
-    private String date;
+    private String dateStr;
 
-    public Note(int id, String title, String content, String date) {
+    public Note(int id, String title, String content, String dateStr) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.date = date;
+        this.dateStr = dateStr;
     }
 
-    public Note(String title, String content, String date) {
+    public Note(String title, String content, String dateStr) {
         this.title = title;
         this.content = content;
-        this.date = date;
+        this.dateStr = dateStr;
     }
 
     public int getId() {
@@ -44,11 +44,11 @@ public class Note {
     }
 
     public String getDate() {
-        return date;
+        return dateStr;
     }
 
     public void setDate(String date) {
-        this.date = date;
+        this.dateStr = date;
     }
 }
 

@@ -2,15 +2,18 @@ package com.example.textfinder;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+
 
 public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FolderViewHolder> {
 
@@ -27,24 +30,24 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FolderVi
 
         View listItem = inflater.inflate(R.layout.notes_list_view,parent, false);
 
-        FoldersAdapter.FolderViewHolder viewHolder = new FolderViewHolder(listItem);
-        return viewHolder;
+        FoldersAdapter.FolderViewHolder folderViewHolder = new FolderViewHolder(listItem);
+        return folderViewHolder;
     }
 
     @Override
     public void onBindViewHolder(final FoldersAdapter.FolderViewHolder viewHolder, final int position)
     {
         final Folder f = folder.get(position);
-        viewHolder.titleView.setText(folder.get(position).getTitle());
+        viewHolder.titleView.setText(folder.get(position).getNoteTitle());
         viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
-                int pos = viewHolder.getAdapterPosition();
+                int positionObj = viewHolder.getAdapterPosition();
 //                Toast.makeText(view.getContext(), notes.get(pos).getTitle(), Toast.LENGTH_SHORT).show();
-//                Intent i = new Intent(view.getContext(),ViewNote.class);
-//                i.putExtra("title", notes.get(pos).getTitle());
-//                i.putExtra("content",notes.get(pos).getContent());
+//                Intent intentObj = new Intent(view.getContext(),ViewNote.class);
+//                intentObj.putExtra("title", notes.get(pos).getTitle());
+//                intentObj.putExtra("content",notes.get(pos).getContent());
 //                view.getContext().startActivity(i);
             }
         });
@@ -71,7 +74,9 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.FolderVi
     public class FolderViewHolder extends RecyclerView.ViewHolder {
         public TextView titleView;
         public LinearLayout linearLayout;
+
         public FolderViewHolder(View itemView) {
+
             super(itemView);
             this.titleView = (TextView) itemView.findViewById(R.id.folderName);
             this.linearLayout = (LinearLayout)itemView.findViewById(R.id.linearViewFolder);
