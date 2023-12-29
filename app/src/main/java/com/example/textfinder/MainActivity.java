@@ -111,10 +111,15 @@ import java.util.Locale;
                     } catch (IOException errorIO) {
                         errorIO.printStackTrace();
                     }
+                    Log.v("LOG PERMISSIONS", "Both permission ok");
                 }else if(checkPermission()){
+                    Log.v("LOG PERMISSIONS", "Only Camera permission ok");
+
                     requestPermissionStorage();
                 }else{
-                    requestPermissionStorage();
+                    Log.v("LOG PERMISSIONS", "Only Storage permission ok");
+
+                    requestPermission();
                 }
             }
         });
